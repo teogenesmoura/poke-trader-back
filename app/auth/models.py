@@ -1,4 +1,4 @@
-from app import db
+from app.extensions import db
 from sqlalchemy.dialects.postgresql import JSON
 
 # Define a base model for other database tables to inherit
