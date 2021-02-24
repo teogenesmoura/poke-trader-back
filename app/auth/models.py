@@ -30,7 +30,7 @@ class User(Base):
         return '<User %r>' % (self.name)
 
 class History(Base):
-    __tablename__ = 'collection'
+    __tablename__ = 'history'
     name = db.Column(db.String(128), nullable=False)
     type = db.Column(db.String(128), nullable=False)
     entries = db.relationship('Entry', backref='owner', lazy='dynamic')
