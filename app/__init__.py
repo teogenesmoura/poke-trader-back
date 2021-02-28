@@ -1,11 +1,13 @@
 import os
 from flask import Flask
-from app.auth.controllers import auth as auth_module
+from app.auth.controllers import auth_blueprint as auth_module
 from app.extensions import db
+from dotenv import load_dotenv
+load_dotenv()
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object(os.environ['APP_SETTINGS'])
+    app.config.from_object(os.getenv('APP_SETTINGS'))
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     register_extensions(app)
     register_blueprints(app)
@@ -21,6 +23,7 @@ def register_extensions(app):
 def register_errorhandlers(app):
     for errcode in [401, 404, 500]:
         app.errorhandler(errcode)
+    return None
 
 def register_blueprints(app):
     app.register_blueprint(auth_module)
