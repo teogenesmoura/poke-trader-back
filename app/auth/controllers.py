@@ -5,7 +5,7 @@ from app.extensions import bcrypt,db
 from app.auth.models import User, BlacklistToken
 from app.util.util import is_email_valid, build_response_object
 from app.messages import INVALID_EMAIL, REGISTRATION_SUCCESS, GENERIC_ERROR, \
-                         USER_NOT_EXIST, LOGIN_SUCCESS, LOGOUT_SUCCESS, EMAIL_PASS_MISMATCH, INVALID_TOKEN
+                         USER_NOT_EXIST, ALREADY_REGISTERED, LOGIN_SUCCESS, LOGOUT_SUCCESS, EMAIL_PASS_MISMATCH, INVALID_TOKEN
 auth_blueprint = Blueprint('auth', __name__)
 
 @auth_blueprint.before_request
@@ -32,15 +32,14 @@ class RegisterAPI(MethodView):
                 db.session.commit()
                 auth_token = user.encode_auth_token(user.id)
                 response = build_response_object('success',REGISTRATION_SUCCESS,auth_token)
-                print('response jsonified')
-                print(jsonify(response))
                 return make_response(jsonify(response)), 201
             except Exception as e:
+                print(e)
                 response = build_response_object('fail',GENERIC_ERROR,"")
                 return make_response(jsonify(response)), 401
         else:
-            response = build_response_object('fail',GENERIC_ERROR,"")
-            return make_response(jsonify(response)), 202
+            response = build_response_object('fail',ALREADY_REGISTERED,"")
+            return make_response(jsonify(response)), 401
 
 class LoginAPI(MethodView):
     def post(self):
@@ -62,7 +61,7 @@ class LoginAPI(MethodView):
                     return make_response(jsonify(response)), 200
             else:
                 response = build_response_object('fail', EMAIL_PASS_MISMATCH, "")
-                return make_response(jsonify(response)), 500
+                return make_response(jsonify(response)), 400
         except Exception as e:
             response = build_response_object('fail',GENERIC_ERROR, "")
             return make_response(jsonify(response)), 500

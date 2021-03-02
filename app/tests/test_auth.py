@@ -105,7 +105,7 @@ class TestAuthBlueprint(BaseTestCase):
             self.assertTrue(data['status'] == 'fail')
             self.assertTrue(data['message'] == 'Email and password do not match.')
             self.assertTrue(response.content_type == 'application/json')
-            self.assertEqual(response.status_code, 500)
+            self.assertEqual(response.status_code, 400)
 
     def test_user_status(self):
         """ Tests if token is still valid """

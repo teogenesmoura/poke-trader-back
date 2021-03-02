@@ -1,6 +1,7 @@
 import os
 import jwt
 import datetime
+from dataclasses import dataclass
 from app.extensions import db, bcrypt
 from sqlalchemy.dialects.postgresql import JSON
 from dotenv import load_dotenv
@@ -101,22 +102,12 @@ class BlacklistToken(db.Model):
         else:
             return False
 
-class History(Base):
-    __tablename__ = 'history'
-    name = db.Column(db.String(128), nullable=False)
-    type = db.Column(db.String(128), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('auth_user.id'))
-    user = db.relationship('User')
-    entries = db.relationship('Entry', backref='parent_history', lazy='dynamic')
-
-    def __init__(self, name, type):
-        self.name = name
-        self.type = type
-
-    def __repr__(self):
-        return '<Collection %r>' % (self.name)
-
+@dataclass
 class Entry(Base):
+    host: JSON
+    opponent: JSON
+    history_id: int
+
     __tablename__ = 'entry'
     host = db.Column(JSON, nullable=False)
     opponent = db.Column(JSON, nullable=False)
@@ -129,3 +120,24 @@ class Entry(Base):
 
     def __repr__(self):
         return '<Entry %r>' % (self.id)
+
+@dataclass
+class History(Base):
+    name: str
+    type: str
+    user_id: int
+
+    __tablename__ = 'history'
+    name = db.Column(db.String(128), nullable=False)
+    type = db.Column(db.String(128), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('auth_user.id'))
+    user = db.relationship('User')
+    entries = db.relationship('Entry', backref='parent_history', lazy='dynamic')
+
+    def __init__(self, name, type, user_id):
+        self.name = name
+        self.type = type
+        self.user_id = user_id
+
+    def __repr__(self):
+        return '<Collection %r>' % (self.name)

@@ -1,6 +1,7 @@
 import os
 from flask import Flask
 from app.auth.controllers import auth_blueprint as auth_module
+from app.history.controllers import history_blueprint as history_module
 from app.extensions import db
 from dotenv import load_dotenv
 load_dotenv()
@@ -27,4 +28,5 @@ def register_errorhandlers(app):
 
 def register_blueprints(app):
     app.register_blueprint(auth_module)
+    app.register_blueprint(history_module)
     return None
