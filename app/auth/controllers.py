@@ -29,17 +29,18 @@ class RegisterAPI(MethodView):
                     password=post_data.get('password')
                 )
                 db.session.add(user)
-                db.session.commit()
-                auth_token = user.encode_auth_token(user.id)
-                response = build_response_object('success',REGISTRATION_SUCCESS,auth_token)
-                return make_response(jsonify(response)), 201
+                db.session.flush()
             except Exception as e:
-                print(e)
                 response = build_response_object('fail',GENERIC_ERROR,"")
-                return make_response(jsonify(response)), 401
+                return make_response(jsonify(response)), 500
+            #return successful
+            user_id = user.id
+            auth_token = user.encode_auth_token(user_id)
+            response = build_response_object('success',REGISTRATION_SUCCESS,auth_token)
+            return make_response(jsonify(response)), 201
         else:
             response = build_response_object('fail',ALREADY_REGISTERED,"")
-            return make_response(jsonify(response)), 401
+            return make_response(jsonify(response)), 500
 
 class LoginAPI(MethodView):
     def post(self):
