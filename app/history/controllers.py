@@ -17,7 +17,7 @@ def get_history_for_user(user):
     except Exception as e:
         return e
     return history
-# 
+#
 # @history_blueprint.before_request
 # def check_data_presence_before_route():
 #     data = request.get_json()
