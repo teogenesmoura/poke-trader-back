@@ -3,7 +3,7 @@ from flask import Flask, Blueprint, request, make_response, jsonify
 from flask.views import MethodView
 from app.extensions import bcrypt,db
 from app.auth.models import User, BlacklistToken
-from app.util.util import is_email_valid, build_response_object
+from app.util.util import is_email_valid, build_response_object, encode_auth_token, decode_auth_token
 from app.messages import INVALID_EMAIL, REGISTRATION_SUCCESS, GENERIC_ERROR, \
                          USER_NOT_EXIST, ALREADY_REGISTERED, LOGIN_SUCCESS, LOGOUT_SUCCESS, EMAIL_PASS_MISMATCH, INVALID_TOKEN
 auth_blueprint = Blueprint('auth', __name__)
@@ -29,15 +29,13 @@ class RegisterAPI(MethodView):
                     password=post_data.get('password')
                 )
                 db.session.add(user)
-                db.session.flush()
+                db.session.commit()
+                auth_token = encode_auth_token(user.id)
+                response = build_response_object('success',REGISTRATION_SUCCESS,auth_token)
+                return make_response(jsonify(response)), 201
             except Exception as e:
                 response = build_response_object('fail',GENERIC_ERROR,"")
                 return make_response(jsonify(response)), 500
-            #return successful
-            user_id = user.id
-            auth_token = user.encode_auth_token(user_id)
-            response = build_response_object('success',REGISTRATION_SUCCESS,auth_token)
-            return make_response(jsonify(response)), 201
         else:
             response = build_response_object('fail',ALREADY_REGISTERED,"")
             return make_response(jsonify(response)), 500
@@ -56,7 +54,7 @@ class LoginAPI(MethodView):
             #Checks username against the given password
             if user and bcrypt.check_password_hash(
                 user.password, post_data.get('password')):
-                auth_token = user.encode_auth_token(user.id)
+                auth_token = encode_auth_token(user.id)
                 if auth_token:
                     response = build_response_object('success',LOGIN_SUCCESS,auth_token)
                     return make_response(jsonify(response)), 200
@@ -75,7 +73,7 @@ class TokenStatusAPI(MethodView):
         else:
             auth_token = ''
         if auth_token:
-            resp = User.decode_auth_token(auth_token)
+            resp = decode_auth_token(auth_token)
             if not isinstance(resp, str):
                 user = User.query.filter_by(id=resp).first()
                 user_info = {
@@ -99,7 +97,7 @@ class LogoutAPI(MethodView):
         else:
             auth_token = ''
         if auth_token:
-            resp = User.decode_auth_token(auth_token)
+            resp = decode_auth_token(auth_token)
             if not isinstance(resp, str):
                 blacklist_token = BlacklistToken(token=auth_token)
                 try:

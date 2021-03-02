@@ -1,5 +1,4 @@
 import os
-import jwt
 import datetime
 from dataclasses import dataclass
 from app.extensions import db, bcrypt
@@ -35,44 +34,6 @@ class User(Base):
 
     def check_password(self):
         return bcrypt.check_password_hash(self.password, value)
-
-    def encode_auth_token(self, user_id):
-        """
-        Generates the Auth Token
-        :return: string
-        """
-        try:
-            payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=3),
-                'iat': datetime.datetime.utcnow(),
-                'sub': user_id
-            }
-            return jwt.encode(
-                payload,
-                os.getenv('SECRET_KEY'),
-                algorithm='HS256'
-            )
-        except Exception as e:
-            return e
-
-    @staticmethod
-    def decode_auth_token(auth_token):
-        """
-        Decodes the auth token
-        :param auth_token:
-        :return: integer|string
-        """
-        try:
-            payload = jwt.decode(auth_token, os.getenv('SECRET_KEY'), algorithms='HS256')
-            is_blacklisted_token = BlacklistToken.check_blacklist(auth_token)
-            if is_blacklisted_token:
-                return 'Token blacklisted. Please log in again.'
-            else:
-                return payload['sub']
-        except jwt.ExpiredSignatureError:
-            return 'Signature expired. Please log in again.'
-        except jwt.InvalidTokenError:
-            return 'Invalid token. Please log in again.'
 
     @property
     def full_name(self):
@@ -114,9 +75,10 @@ class Entry(Base):
     history_id = db.Column(db.Integer, db.ForeignKey('history.id'))
     history = db.relationship('History')
 
-    def __init__(self, host, opponent):
+    def __init__(self, history_id, host, opponent):
         self.host = host
         self.opponent = opponent
+        self.history_id = history_id
 
     def __repr__(self):
         return '<Entry %r>' % (self.id)
