@@ -9,7 +9,7 @@ user_blueprint = Blueprint('user', __name__, url_prefix=USER_BASE_URL)
 
 class UserHistoryAPI(MethodView):
     """ Returns a History object associated with an user """
-    def get(self, user_id):
+    def get(self):
         #checa se usuário tem token válido
         auth_header = request.headers.get('Authorization')
         post_data = request.get_json()
@@ -38,7 +38,7 @@ user_history_controller = UserHistoryAPI.as_view('user_history')
 
 #rules for API endpoints
 user_blueprint.add_url_rule(
-    '<user_id>/history',
+    'history',
     view_func=user_history_controller,
     methods=['GET']
 )
