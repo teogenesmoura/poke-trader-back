@@ -30,8 +30,7 @@ class SingleEntryAPI(MethodView):
         #insere entry no histórico
         host = json.dumps(post_data.get('host'))
         opponent = json.dumps(post_data.get('opponent'))
-        history_id = post_data.get('history_id')
-        if host and opponent:
+        if host and opponent and history_id:
             try:
                 entry = Entry(
                     host=host,
@@ -43,7 +42,6 @@ class SingleEntryAPI(MethodView):
                 entry_info = {
                     'host': entry.host,
                     'opponent': entry.opponent,
-                    'history_id': entry.history_id
                 }
             except Exception as error:
                 response = build_response_object('fail', GENERIC_ERROR, "")
@@ -72,8 +70,10 @@ class EntriesAPI(MethodView):
         try:
             entries = Entry.query.filter_by(history_id=history_id).all()
         except Exception as error:
-            print(error)
-            return "deu erro"
+            response = build_response_object('fail', GENERIC_ERROR, "")
+            return make_response(jsonify(response)), 500
+        if not entries:
+            entries = "No entries found"
         response = build_response_object('success', entries, "")
         return make_response(jsonify(response)), 200
 

@@ -17,13 +17,13 @@ def get_history_for_user(user):
     except Exception as e:
         return e
     return history
-
-@history_blueprint.before_request
-def check_data_presence_before_route():
-    data = request.get_json()
-    if not data:
-        resp = build_response_object('fail', NO_DATA_FOUND, "")
-        return make_response(jsonify(resp)), 400
+# 
+# @history_blueprint.before_request
+# def check_data_presence_before_route():
+#     data = request.get_json()
+#     if not data:
+#         resp = build_response_object('fail', NO_DATA_FOUND, "")
+#         return make_response(jsonify(resp)), 400
 
 class HistoryAPI(MethodView):
     def post(self):
@@ -67,7 +67,7 @@ history_blueprint.add_url_rule(
     methods=['POST']
 )
 history_blueprint.add_url_rule(
-    "/<history_id>",
+    "<history_id>",
     view_func=history_controller,
     methods=['GET']
 )

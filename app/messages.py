@@ -5,7 +5,7 @@ LOGOUT_SUCCESS="Successfully logged out."
 RESOURCE_CREATION_SUCCESS="Successfully created your "
 #error messages
 GENERIC_ERROR="Some error occured. Please try again."
-USER_NOT_EXIST="User does not exist."
+USER_NOT_EXIST="Could not find user."
 INVALID_EMAIL="Please provide a valid email address."
 EMAIL_PASS_MISMATCH="Email and password do not match."
 INVALID_TOKEN="Provide a valid auth token."
