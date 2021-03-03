@@ -1,5 +1,6 @@
 import os
 from flask import Flask
+from flask_cors import CORS
 from app.auth.controllers import auth_blueprint as auth_module
 from app.history.controllers import history_blueprint as history_module
 from app.entry.controllers import entry_blueprint as entry_module
@@ -10,6 +11,7 @@ load_dotenv()
 
 def create_app():
     app = Flask(__name__)
+    CORS(app)
     app.config.from_object(os.getenv('APP_SETTINGS'))
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     register_extensions(app)
