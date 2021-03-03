@@ -14,10 +14,11 @@ def create_app():
     app.config['CORS_HEADERS'] = 'Content-Type'
     app.config.from_object(os.getenv('APP_SETTINGS'))
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    CORS(app)
     register_extensions(app)
     register_blueprints(app)
     register_errorhandlers(app)
-    return CORS(app)
+    return app
 
 def register_extensions(app):
     db.init_app(app)
