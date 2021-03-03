@@ -1,5 +1,6 @@
 import os
 from flask import Flask
+from flask_cors import CORS
 from app.auth.controllers import auth_blueprint as auth_module
 from app.history.controllers import history_blueprint as history_module
 from app.entry.controllers import entry_blueprint as entry_module
@@ -16,7 +17,7 @@ def create_app():
     register_extensions(app)
     register_blueprints(app)
     register_errorhandlers(app)
-    return app
+    return CORS(app)
 
 def register_extensions(app):
     db.init_app(app)
