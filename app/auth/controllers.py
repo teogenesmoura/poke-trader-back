@@ -1,4 +1,5 @@
 import json
+from flask_cors import CORS
 from flask import Flask, Blueprint, request, make_response, jsonify
 from flask.views import MethodView
 from app.extensions import bcrypt,db
@@ -7,6 +8,7 @@ from app.util.util import is_email_valid, build_response_object, encode_auth_tok
 from app.messages import INVALID_EMAIL, REGISTRATION_SUCCESS, GENERIC_ERROR, \
                          USER_NOT_EXIST, ALREADY_REGISTERED, LOGIN_SUCCESS, LOGOUT_SUCCESS, EMAIL_PASS_MISMATCH, INVALID_TOKEN
 auth_blueprint = Blueprint('auth', __name__)
+CORS(auth_blueprint)
 
 @auth_blueprint.before_request
 def check_valid_email_before_route():
