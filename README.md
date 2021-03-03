@@ -18,6 +18,12 @@ username: str
 password: str  
 ```
 
+#### Token Status
+
+```
+GET /auth/status/
+```
+
 #### Logout
 
 ```
