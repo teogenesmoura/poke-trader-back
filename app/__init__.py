@@ -11,7 +11,7 @@ load_dotenv()
 
 def create_app():
     app = Flask(__name__)
-    CORS(app)
+    cors = CORS(app, resources={r"/*": {"origins": "*"}})
     app.config.from_object(os.getenv('APP_SETTINGS'))
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     register_extensions(app)
