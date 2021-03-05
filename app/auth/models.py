@@ -47,20 +47,20 @@ class User(Base):
 class Entry(Base):
     host: JSON
     opponent: JSON
-    simulation_successfull: bool
+    isTradeFair: bool
 
     __tablename__ = 'entry'
     host = db.Column(JSON, nullable=False)
     opponent = db.Column(JSON, nullable=False)
-    simulation_successfull = db.Column(db.Boolean, unique=False)
+    isTradeFair = db.Column(db.Boolean, unique=False)
     user = db.relationship('User')
     user_id = db.Column(db.Integer, db.ForeignKey('auth_user.id'))
 
-    def __init__(self, user_id, host, opponent, simulation_successfull):
+    def __init__(self, user_id, host, opponent, isTradeFair):
         self.user_id = user_id
         self.host = host
         self.opponent = opponent
-        self.simulation_successfull = simulation_successfull
+        self.isTradeFair = isTradeFair
 
     def __repr__(self):
         return '<Entry %r>' % (self.id)

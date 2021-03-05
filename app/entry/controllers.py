@@ -25,9 +25,7 @@ class SingleEntryAPI(MethodView):
         #insere entry no histórico
         host = json.dumps(post_data.get('host'))
         opponent = json.dumps(post_data.get('opponent'))
-        simulation_successfull=post_data.get('simulation_successfull')
-        print("type simulation_successfull")
-        print(type(simulation_successfull))
+        isTradeFair=post_data.get('isTradeFair')
         entry_info = {}
         if host and opponent:
             try:
@@ -35,14 +33,14 @@ class SingleEntryAPI(MethodView):
                     host=host,
                     opponent=opponent,
                     user_id=user_id,
-                    simulation_successfull=simulation_successfull
+                    isTradeFair=isTradeFair
                 )
                 db.session.add(entry)
                 db.session.commit()
                 entry_info = {
                     'host': entry.host,
                     'opponent': entry.opponent,
-                    'simulation_successfull': entry.simulation_successfull
+                    'isTradeFair': entry.isTradeFair
                 }
             except Exception as error:
                 print(error)
