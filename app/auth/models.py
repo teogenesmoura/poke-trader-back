@@ -20,7 +20,7 @@ class User(Base):
     first_name = db.Column(db.String(30), nullable=True)
     last_name = db.Column(db.String(30), nullable=True)
     password = db.Column(db.LargeBinary(128),  nullable=True)
-    histories = db.relationship('History', backref='auth_user', lazy='dynamic')
+    entries = db.relationship('Entry', backref='auth_user', lazy='dynamic')
 
     def __init__(self, username, email, password=None, **kwargs):
         super().__init__(username=username, email=email, **kwargs)
@@ -42,6 +42,29 @@ class User(Base):
     def __repr__(self):
         return f"<User({self.username!r})>"
 
+
+@dataclass
+class Entry(Base):
+    host: JSON
+    opponent: JSON
+    simulation_successfull: bool
+
+    __tablename__ = 'entry'
+    host = db.Column(JSON, nullable=False)
+    opponent = db.Column(JSON, nullable=False)
+    simulation_successfull = db.Column(db.Boolean, unique=False)
+    user = db.relationship('User')
+    user_id = db.Column(db.Integer, db.ForeignKey('auth_user.id'))
+
+    def __init__(self, user_id, host, opponent, simulation_successfull):
+        self.user_id = user_id
+        self.host = host
+        self.opponent = opponent
+        self.simulation_successfull = simulation_successfull
+
+    def __repr__(self):
+        return '<Entry %r>' % (self.id)
+
 class BlacklistToken(db.Model):
     __tablename__ = 'blacklist_tokens'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -62,44 +85,3 @@ class BlacklistToken(db.Model):
             return True
         else:
             return False
-
-@dataclass
-class Entry(Base):
-    host: JSON
-    opponent: JSON
-    history_id: int
-
-    __tablename__ = 'entry'
-    host = db.Column(JSON, nullable=False)
-    opponent = db.Column(JSON, nullable=False)
-    history_id = db.Column(db.Integer, db.ForeignKey('history.id'))
-    history = db.relationship('History')
-
-    def __init__(self, history_id, host, opponent):
-        self.host = host
-        self.opponent = opponent
-        self.history_id = history_id
-
-    def __repr__(self):
-        return '<Entry %r>' % (self.id)
-
-@dataclass
-class History(Base):
-    name: str
-    type: str
-    user_id: int
-
-    __tablename__ = 'history'
-    name = db.Column(db.String(128), nullable=False)
-    type = db.Column(db.String(128), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('auth_user.id'))
-    user = db.relationship('User')
-    entries = db.relationship('Entry', backref='parent_history', lazy='dynamic')
-
-    def __init__(self, name, type, user_id):
-        self.name = name
-        self.type = type
-        self.user_id = user_id
-
-    def __repr__(self):
-        return '<Collection %r>' % (self.name)

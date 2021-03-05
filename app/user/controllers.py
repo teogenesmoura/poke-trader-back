@@ -1,5 +1,4 @@
-from app.auth.models import User, History, Entry
-from app.history.controllers import get_history_for_user
+from app.auth.models import User, Entry
 from flask import Flask, Blueprint, request, make_response, jsonify
 from flask.views import MethodView
 from app.util.util import build_response_object, get_user_from_token
