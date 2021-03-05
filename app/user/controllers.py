@@ -22,6 +22,7 @@ class UserHistoryAPI(MethodView):
         history = get_history_for_user(user)
         #se histórico nao existe, retorna erro
         if(not(isinstance(history, History))):
+            print("entra em not instance of History")
             response = build_response_object('fail', HISTORY_NOT_EXIST, "")
             return make_response(jsonify(response)), 404
         #retorna historico
