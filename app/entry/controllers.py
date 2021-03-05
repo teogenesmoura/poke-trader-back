@@ -26,8 +26,7 @@ class SingleEntryAPI(MethodView):
         host = json.dumps(post_data.get('host'))
         opponent = json.dumps(post_data.get('opponent'))
         isTradeFair=post_data.get('isTradeFair')
-        entry_info = {}
-        if host and opponent:
+        if host != 'null' and opponent != 'null':
             try:
                 entry = Entry(
                     host=host,
@@ -43,11 +42,13 @@ class SingleEntryAPI(MethodView):
                     'isTradeFair': entry.isTradeFair
                 }
             except Exception as error:
-                print(error)
                 response = build_response_object('fail', GENERIC_ERROR, "")
                 return make_response(jsonify(response)), 500
-        response = build_response_object('success', entry_info, "")
-        return make_response(jsonify(response)), 200
+            response = build_response_object('success', entry_info, "")
+            return make_response(jsonify(response)), 200
+        else:
+            response = build_response_object('fail', GENERIC_ERROR, "")
+            return make_response(jsonify(response)), 500
 
 class EntriesAPI(MethodView):
     """ Returns all Entry objects associated with a User object """
