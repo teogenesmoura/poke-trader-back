@@ -68,8 +68,7 @@ class EntriesAPI(MethodView):
             return make_response(jsonify(response)), 500
         if not entries:
             entries = "No entries found"
-        response = build_response_object('success', entries, "")
-        return make_response(jsonify(response)), 200
+        return make_response(jsonify(entries)), 200
 
 entry_controller = SingleEntryAPI.as_view('entry')
 entries_controller = EntriesAPI.as_view('entries')
