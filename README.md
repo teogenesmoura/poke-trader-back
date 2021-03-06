@@ -1,10 +1,4 @@
-## Poketrader back
-
-# PokeTrader front
-
-[![codecov](https://codecov.io/gh/teogenesmoura/poke-trader-front/branch/master/graph/badge.svg?token=5IA3FKBE66)](https://codecov.io/gh/teogenesmoura/poke-trader-front)
-[![Actions Status](https://github.com/teogenesmoura/poke-trader-front/workflows/Deployment/badge.svg)](https://github.com/teogenesmoura/poke-trader-front/actions)
-[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE)
+# Poketrader back
 
 <center><img src="https://raw.githubusercontent.com/teogenesmoura/poke-trader-front/master/src/assets/logo.svg"></center>
 
@@ -138,7 +132,7 @@ Authorization-Headers: Token Bearer
 POST /auth/logout/
 ```
 
-### Create an Entry
+#### Create an Entry
 ```
 Authorization-Headers: Token Bearer
 POST /user/entry
@@ -146,7 +140,7 @@ isTradeFair: bool
 host: JSON
 opponent: JSON
 ```
-### Get entries
+#### Get entries
 ```
 Authorization-Headers: Token Bearer
 GET /user/entries
